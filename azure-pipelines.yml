@@ -26,5 +26,5 @@ steps:
   displayName: 'pytest'
 
 - script: |
-    pytest $(System.DefaultWorkingDirectory)/pytest-example/tests
+    pytest $(System.DefaultWorkingDirectory)/tests
   displayName: ' run pytest'
