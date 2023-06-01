@@ -6,25 +6,36 @@
 trigger:
 - master
 
-pool:
-  vmImage: ubuntu-latest
-strategy:
-  matrix:
-    Python37:
-      python.version: '3.7'
+variables:
+  vmImageName: ubuntu-latest
+  myVM: macOS 13 Ventura
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+stages:
+- stage: Test 
+  displayName: Test folder
+  jobs:  
+  - job: test
+    displayName: test
+    strategy:
+      matrix:
+        Python37:
+          python.version: '3.7'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python $(python.version)'
+      inputs:
+        versionSpec: '$(python.version)'
+    
+    - script: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-azurepipelines
+        pytest
+      displayName: 'pytest'
 
-- script: |
-    python -m pip install --upgrade pip
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+    - script: |
+        pytest $(System.DefaultWorkingDirectory)/tests
+      displayName: ' run pytest'
 
-- script: |
-    pytest $(System.DefaultWorkingDirectory)/tests
-  displayName: ' run pytest'
+
