@@ -12,7 +12,7 @@ variables:
 
 stages:
 - stage: Test 
-  displayName: Test folder
+  displayName: Test 
   jobs:  
   - job: test
     displayName: test
@@ -39,3 +39,30 @@ stages:
       displayName: ' run pytest'
 
 
+- stage: Second test 
+  displayName: Test on mac machine
+  dependsOn: Test
+  jobs:  
+  - job: test
+    displayName: test
+    strategy:
+      matrix:
+        Python37:
+          python.version: '3.7'
+    pool:
+      vmImage: $(myVM)
+    steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python $(python.version)'
+      inputs:
+        versionSpec: '$(python.version)'
+    
+    - script: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-azurepipelines
+        pytest
+      displayName: 'pytest'
+
+    - script: |
+        pytest $(System.DefaultWorkingDirectory)/tests
+      displayName: ' run pytest'
