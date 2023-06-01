@@ -39,7 +39,7 @@ stages:
       displayName: ' run pytest'
 
 
-- stage: Second test 
+- stage: Test2
   displayName: Test on mac machine
   dependsOn: Test
   jobs:  
